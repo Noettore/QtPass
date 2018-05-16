@@ -45,11 +45,6 @@ ConfigDialog::ConfigDialog(MainWindow *parent)
   ui->checkBoxAutoPush->setChecked(QtPassSettings::isAutoPush());
   ui->checkBoxAlwaysOnTop->setChecked(QtPassSettings::isAlwaysOnTop());
 
-  #if defined(Q_OS_WIN ) || defined(__APPLE__)
-    ui->checkBoxUseOtp->hide();
-    ui->label_10->hide();
-  #endif
-
   setProfiles(QtPassSettings::getProfiles(), QtPassSettings::getProfile());
   setPwgenPath(QtPassSettings::getPwgenExecutable());
   setPasswordConfiguration(QtPassSettings::getPasswordConfiguration());

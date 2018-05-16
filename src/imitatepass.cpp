@@ -1,6 +1,7 @@
 #include "imitatepass.h"
 #include "debughelper.h"
 #include "qtpasssettings.h"
+#include "libotp.h"
 #include <QDirIterator>
 
 using namespace Enums;
@@ -53,7 +54,43 @@ void ImitatePass::Show(QString file) {
 /**
  * @brief ImitatePass::OtpGenerate generates an otp code
  */
-void ImitatePass::OtpGenerate(QString file) {}
+void ImitatePass::OtpGenerate(QString file) {
+  connect(QtPassSettings::getPass(), &Pass::finishedShow, this,
+            &ImitatePass::OtpFromPasswordFile);
+  QtPassSettings::getPass()->Show(file);
+
+}
+
+void ImitatePass::OtpFromPasswordFile(const QString &text) {
+  QStringList tokens = text.split('\n');
+  //tokens[0] is the password field
+  QString password = tokens[0];
+  if (password.startsWith("otpauth://", Qt::CaseInsensitive)) {
+    std::string secret;
+    int secretStart = password.indexOf("secret=", 0, Qt::CaseInsensitive) + 7;
+    int secretEnd = password.indexOf("&", secretStart, Qt::CaseInsensitive);
+    if (secretEnd != -1)
+      secret = password.mid(secretStart, secretEnd - secretStart).toStdString();
+    else
+      secret = password.mid(secretStart).toStdString();
+    //algorithm
+    if (password.contains("totp", Qt::CaseInsensitive)) {
+      //digit
+      //period
+    } else if (password.contains("hotp", Qt::CaseInsensitive)) {
+      int counter;
+      bool conversionOk;
+      int counterStart = password.indexOf("counter=", 0, Qt::CaseInsensitive) + 8;
+      int counterEnd = password.indexOf("&", counterStart, Qt::CaseInsensitive);
+      if (counterEnd != -1)
+        counter = password.mid(counterStart, counterEnd - counterStart).toInt(&conversionOk, 10);
+      else
+        counter = password.mid(counterStart).toInt(&conversionOk, 10);
+    }
+  } else {
+    //handle error if password is not an otp url
+  }
+}
 
 /**
  * @brief ImitatePass::Insert create new file with encrypted content

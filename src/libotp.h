@@ -34,7 +34,7 @@ namespace OTP {
 
 	Bytes::ByteString hmacSha1_64(const Bytes::ByteString &key, const Bytes::ByteString &msg);
 	uint32_t hotp(const Bytes::ByteString &key, uint64_t counter, size_t digitCount = 6, HmacFunc hmac = hmacSha1_64);
-	uint32_t totp(const Bytes::ByteString & key, uint64_t timeNow, uint64_t timeStart, uint64_t timeStep, size_t digitCount = 6, HmacFunc hmac = hmacSha1_64);
+	uint32_t totp(const Bytes::ByteString &key, uint64_t timeNow, uint64_t timeStart, uint64_t timeStep, size_t digitCount = 6, HmacFunc hmac = hmacSha1_64);
 }
 
 #endif

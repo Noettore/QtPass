@@ -62,6 +62,9 @@ signals:
   void startReencryptPath();
   void endReencryptPath();
 
+private slots:
+  void OtpFromPasswordFile(const QString &text);
+
   // Pass interface
 public:
   void Move(const QString src, const QString dest,

@@ -43,7 +43,7 @@ namespace OTP {
 			}
 		}
 
-		std::string toHexString(const ByteString & bstr) {
+		std::string toHexString(const ByteString &bstr) {
 			std::string ret;
 			for (Byte b : bstr) {
 				ret.push_back(nibbleToLCHex((b >> 4) & 0x0F));
@@ -52,7 +52,7 @@ namespace OTP {
 			return ret;
 		}
 
-		ByteString fromHexStringSkipUnknown(const std::string & str) {
+		ByteString fromHexStringSkipUnknown(const std::string &str) {
 			std::string hstr;
 			for (char c : str) {
 				if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f')) {
@@ -87,7 +87,7 @@ namespace OTP {
 			return left + right;
 		}
 
-		static ByteString b32ChunkToBytes(const std::string & str) {
+		static ByteString b32ChunkToBytes(const std::string &str) {
 			ByteString ret;
 			uint64_t whole = 0x00;
 			size_t padcount = 0;
@@ -145,7 +145,7 @@ namespace OTP {
 			return static_cast<uint64_t>(n);
 		}
 
-		static std::string bytesToB32Chunk(const ByteString & bs) {
+		static std::string bytesToB32Chunk(const ByteString &bs) {
 			if (bs.size() < 1 || bs.size() > 5) {
 				throw std::invalid_argument("need a chunk of at least 1 and at most 5 bytes");
 			}
@@ -190,7 +190,7 @@ namespace OTP {
 			return ret;
 		}
 
-		ByteString fromBase32(const std::string & b32str) {
+		ByteString fromBase32(const std::string &b32str) {
 			if (b32str.size() % 8 != 0) {
 				throw std::invalid_argument("base32 string length not divisible by 8");
 			}
@@ -203,7 +203,7 @@ namespace OTP {
 			return ret;
 		}
 
-		ByteString fromUnpaddedBase32(const std::string & b32str) {
+		ByteString fromUnpaddedBase32(const std::string &b32str) {
 			std::string newstr = b32str;
 			while (newstr.size() % 8 != 0) {
 				newstr.push_back('=');
@@ -211,7 +211,7 @@ namespace OTP {
 			return fromBase32(newstr);
 		}
 
-		std::string toBase32(const ByteString & bs) {
+		std::string toBase32(const ByteString &bs) {
 			std::string ret;
 			size_t i, j, len;
 			for (j = 0; j < bs.size() / 5; ++j) {
@@ -236,7 +236,7 @@ namespace OTP {
 		return (num << rotcount) | (num >> (32 - rotcount));
 	}
 
-	Bytes::ByteString sha1(const Bytes::ByteString & msg) {
+	Bytes::ByteString sha1(const Bytes::ByteString &msg) {
 		const size_t size_bytes = msg.size();
 		const uint64_t size_bits = size_bytes * 8;
 		Bytes::ByteString bstr = msg;
@@ -329,9 +329,9 @@ namespace OTP {
 		return first + second + third + fourth + fifth;
 	}
 
-	Bytes::ByteString hmacSha1(const Bytes::ByteString & key, const Bytes::ByteString & msg, size_t blockSize = 64);
+	Bytes::ByteString hmacSha1(const Bytes::ByteString &key, const Bytes::ByteString &msg, size_t blockSize = 64);
 
-	Bytes::ByteString hmacSha1(const Bytes::ByteString & key, const Bytes::ByteString & msg, size_t blockSize) {
+	Bytes::ByteString hmacSha1(const Bytes::ByteString &key, const Bytes::ByteString &msg, size_t blockSize) {
 		Bytes::ByteString realKey = key;
 		Bytes::ByteStringDestructor asplode(&realKey);
 		if (realKey.size() > blockSize) {
@@ -363,11 +363,11 @@ namespace OTP {
 		return sha1(outerMsg);
 	}
 
-	Bytes::ByteString hmacSha1_64(const Bytes::ByteString & key, const Bytes::ByteString & msg) {
+	Bytes::ByteString hmacSha1_64(const Bytes::ByteString &key, const Bytes::ByteString &msg) {
 		return hmacSha1(key, msg, 64);
 	}
 
-	uint32_t hotp(const Bytes::ByteString & key, uint64_t counter, size_t digitCount, HmacFunc hmacf) {
+	uint32_t hotp(const Bytes::ByteString &key, uint64_t counter, size_t digitCount, HmacFunc hmacf) {
 		Bytes::ByteString msg = Bytes::u64beToByteString(counter);
 		Bytes::ByteStringDestructor dmsg(&msg);
 		Bytes::ByteString hmac = hmacf(key, msg);
@@ -388,7 +388,7 @@ namespace OTP {
 		return (ret & 0x7fffffff) % digits10;
 	}
 
-	uint32_t totp(const Bytes::ByteString & key, uint64_t timeNow, uint64_t timeStart, uint64_t timeStep, size_t digitCount, HmacFunc hmacf) {
+	uint32_t totp(const Bytes::ByteString &key, uint64_t timeNow, uint64_t timeStart, uint64_t timeStep, size_t digitCount, HmacFunc hmacf) {
 		uint64_t timeValue = (timeNow - timeStart) / timeStep;
 		return hotp(key, timeValue, digitCount, hmacf);
 	}

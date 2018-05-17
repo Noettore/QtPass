@@ -19,3 +19,6 @@ localization/*.qm
 build/
 .idea
 .vscode
+GPATH
+GRTAGS
+GTAGS

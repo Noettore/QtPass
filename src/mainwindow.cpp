@@ -596,8 +596,11 @@ void MainWindow::passShowHandler(const QString &p_output) {
   enableUiElements(true);
 }
 
-void MainWindow::passOtpHandler(const QString &p_output) {
-  if (!p_output.isEmpty()) {
+void MainWindow::passOtpHandler(const QString &p_output, const QString &p_errout) {
+  if (!p_errout.isEmpty()) {
+      processErrorExit(0, p_errout);
+  } else if (!p_output.isEmpty()) {
+      clearTemplateWidgets();
       addToGridLayout(ui->gridLayout->count()+1, tr("OTP Code"), p_output);
       copyTextToClipboard(p_output);
   }

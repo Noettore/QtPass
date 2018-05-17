@@ -88,7 +88,7 @@ signals:
   void finishedGitPull(const QString &, const QString &);
   void finishedGitPush(const QString &, const QString &);
   void finishedShow(const QString &);
-  void finishedOtpGenerate(const QString &);
+  void finishedOtpGenerate(const QString &, const QString &);
   void finishedInsert(const QString &, const QString &);
   void finishedRemove(const QString &, const QString &);
   void finishedInit(const QString &, const QString &);

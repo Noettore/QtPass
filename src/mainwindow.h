@@ -93,7 +93,7 @@ private slots:
   void endReencryptPath();
   void critical(QString, QString);
   void passShowHandler(const QString &);
-  void passOtpHandler(const QString &);
+  void passOtpHandler(const QString &, const QString &);
   void passStoreChanged(const QString &, const QString &);
   void doGitPush();
 

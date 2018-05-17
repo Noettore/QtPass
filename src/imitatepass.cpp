@@ -65,37 +65,52 @@ void ImitatePass::OtpGenerate(QString file) {
 
 void ImitatePass::OtpFromPasswordFile(const QString &text) {
   QStringList tokens = text.split('\n');
-  //tokens[0] is the password field
   QString password = tokens[0];
   if (password.startsWith("otpauth://", Qt::CaseInsensitive)) {
-    uint32_t otp;
+    uint32_t otp = -1;
     std::string secret;
+    OTP::Bytes::ByteString paddedSecret;
     int secretStart = password.indexOf("secret=", 0, Qt::CaseInsensitive) + 7;
     int secretEnd = password.indexOf("&", secretStart);
-    if (secretEnd != -1)
+    if (secretEnd != -1) {
       secret = password.mid(secretStart, secretEnd - secretStart).toUpper().toStdString();
-    else
+    } else {
       secret = password.mid(secretStart).toUpper().toStdString();
-    OTP::Bytes::ByteString paddedSecret = OTP::Bytes::fromUnpaddedBase32(secret);
+    }
+    try {
+      paddedSecret = OTP::Bytes::fromUnpaddedBase32(secret);
+    } catch (std::invalid_argument e) {
+      emit finishedOtpGenerate(QString(), QString(e.what()));
+      return;
+    }
     if (password.contains("totp", Qt::CaseInsensitive)) {
-      otp = OTP::totp(paddedSecret, time(NULL), 0, 30);
+      try {
+        otp = OTP::totp(paddedSecret, time(NULL), 0, 30);
+      } catch (std::invalid_argument &e) {
+         emit finishedOtpGenerate(QString(), QString(e.what()));
+         return;
+      }
     } else if (password.contains("hotp", Qt::CaseInsensitive)) {
       int counter;
       bool conversionOk;
       int counterStart = password.indexOf("counter=", 0, Qt::CaseInsensitive) + 8;
       int counterEnd = password.indexOf("&", counterStart);
-      if (counterEnd != -1)
+      if (counterEnd != -1) {
         counter = password.mid(counterStart, counterEnd - counterStart).toInt(&conversionOk, 10);
-      else
+      } else {
         counter = password.mid(counterStart).toInt(&conversionOk, 10);
+      }
       if (conversionOk) {
         otp = OTP::hotp(paddedSecret, counter);
+      } else {
+        emit finishedOtpGenerate(QString(), QString("counter parameter is not a number"));
       }
+    } else {
+      emit finishedOtpGenerate(QString(), QString("OTP type not found"));
     }
-    std::cout << otp << std::endl;
+    emit finishedOtpGenerate(QString::number(otp), QString());
   } else {
-    //handle error if password is not an otp url
-    std::cout << "Error: password is not an OTP URI." << std::endl;
+    emit finishedOtpGenerate(QString(), QString("OTP secret not found"));
   }
 }
 

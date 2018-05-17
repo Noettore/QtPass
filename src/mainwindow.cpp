@@ -935,10 +935,13 @@ void MainWindow::onDelete() {
  * @brief MainWindow::onOTP try and generate (selected) OTP code.
  */
 void MainWindow::onOtp() {
-  QString file = getFile(ui->treeView->currentIndex(), true);
-  if (!file.isEmpty()) {
-    if (QtPassSettings::isUseOtp())
-      QtPassSettings::getPass()->OtpGenerate(file);
+  QFileInfo fileOrFolder =
+      model.fileInfo(proxyModel.mapToSource(ui->treeView->currentIndex()));
+
+  if (fileOrFolder.isFile()) {
+    QString file = getFile(ui->treeView->currentIndex(), true);
+    if (!file.isEmpty() && QtPassSettings::isUseOtp())
+    QtPassSettings::getPass()->OtpGenerate(file);
   }
 }
 

@@ -329,7 +329,7 @@ namespace OTP {
 		return first + second + third + fourth + fifth;
 	}
 
-	Bytes::ByteString hmacSha1(const Bytes::ByteString &key, const Bytes::ByteString &msg, size_t blockSize = 64);
+	//Bytes::ByteString hmacSha1(const Bytes::ByteString &key, const Bytes::ByteString &msg, size_t blockSize = 64);
 
 	Bytes::ByteString hmacSha1(const Bytes::ByteString &key, const Bytes::ByteString &msg, size_t blockSize) {
 		Bytes::ByteString realKey = key;

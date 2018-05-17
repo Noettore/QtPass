@@ -1459,9 +1459,6 @@ void MainWindow::updateGitButtonVisibility() {
 }
 
 void MainWindow::updateOtpButtonVisibility() {
-  #if defined(Q_OS_WIN ) || defined(__APPLE__)
-    ui->actionOtp->setVisible(false);
-  #endif
   if (!QtPassSettings::isUseOtp())
     ui->actionOtp->setEnabled(false);
   else

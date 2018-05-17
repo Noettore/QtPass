@@ -64,6 +64,7 @@ void ImitatePass::OtpGenerate(QString file) {
 }
 
 void ImitatePass::OtpFromPasswordFile(const QString &text) {
+  disconnect(QtPassSettings::getPass(), &Pass::finishedShow, this, 0);
   QStringList tokens = text.split('\n');
   QString password = tokens[0];
   if (password.startsWith("otpauth://", Qt::CaseInsensitive)) {
@@ -108,7 +109,7 @@ void ImitatePass::OtpFromPasswordFile(const QString &text) {
     } else {
       emit finishedOtpGenerate(QString(), QString("OTP type not found"));
     }
-    emit finishedOtpGenerate(QString::number(otp), QString());
+    emit finishedOtpGenerate(QString::number(otp).rightJustified(6, '0'), QString());
   } else {
     emit finishedOtpGenerate(QString(), QString("OTP secret not found"));
   }

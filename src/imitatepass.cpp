@@ -3,7 +3,7 @@
 #include "qtpasssettings.h"
 #include "libotp.h"
 #include <QDirIterator>
-#include <iostream>
+#include <QSignalMapper>
 #include <time.h>
 
 using namespace Enums;
@@ -57,13 +57,16 @@ void ImitatePass::Show(QString file) {
  * @brief ImitatePass::OtpGenerate generates an otp code
  */
 void ImitatePass::OtpGenerate(QString file) {
-  connect(QtPassSettings::getPass(), &Pass::finishedShow, this,
-            &ImitatePass::OtpFromPasswordFile);
+  QSignalMapper *signalMapper = new QSignalMapper(this);
+  connect(QtPassSettings::getPass(), &Pass::finishedShow, signalMapper, SLOT(map()));
+  signalMapper->setMapping(QtPassSettings::getPass(), file);
+  connect(signalMapper, SIGNAL(mapped(const &QString)), this,
+            SLOT(ImitatePass::OtpFromPasswordFile(const &QString)));
   QtPassSettings::getPass()->Show(file);
 
 }
 
-void ImitatePass::OtpFromPasswordFile(const QString &text) {
+void ImitatePass::OtpFromPasswordFile(const QString &text, const QString &file) {
   disconnect(QtPassSettings::getPass(), &Pass::finishedShow, this, 0);
   QStringList tokens = text.split('\n');
   QString password = tokens[0];
@@ -84,14 +87,14 @@ void ImitatePass::OtpFromPasswordFile(const QString &text) {
       emit finishedOtpGenerate(QString(), QString(e.what()));
       return;
     }
-    if (password.contains("totp", Qt::CaseInsensitive)) {
+    if (password.contains("otpauth://totp", Qt::CaseInsensitive)) {
       try {
         otp = OTP::totp(paddedSecret, time(NULL), 0, 30);
       } catch (std::invalid_argument &e) {
          emit finishedOtpGenerate(QString(), QString(e.what()));
          return;
       }
-    } else if (password.contains("hotp", Qt::CaseInsensitive)) {
+    } else if (password.contains("otpauth://hotp", Qt::CaseInsensitive)) {
       int counter;
       bool conversionOk;
       int counterStart = password.indexOf("counter=", 0, Qt::CaseInsensitive) + 8;
@@ -103,6 +106,8 @@ void ImitatePass::OtpFromPasswordFile(const QString &text) {
       }
       if (conversionOk) {
         otp = OTP::hotp(paddedSecret, counter);
+        tokens[0][counterStart+8] = QChar(counter+1);
+        Insert(file, tokens.join('\n'), true);
       } else {
         emit finishedOtpGenerate(QString(), QString("counter parameter is not a number"));
       }

@@ -58,10 +58,10 @@ void ImitatePass::Show(QString file) {
  */
 void ImitatePass::OtpGenerate(QString file) {
   QSignalMapper *signalMapper = new QSignalMapper(this);
-  connect(QtPassSettings::getPass(), &Pass::finishedShow, signalMapper, SLOT(map()));
+  connect(QtPassSettings::getPass(), SIGNAL(finishedShow()), signalMapper, SLOT(map()));
   signalMapper->setMapping(QtPassSettings::getPass(), file);
   connect(signalMapper, SIGNAL(mapped(const &QString)), this,
-            SLOT(ImitatePass::OtpFromPasswordFile(const &QString)));
+            SLOT(OtpFromPasswordFile(const &QString)));
   QtPassSettings::getPass()->Show(file);
 
 }

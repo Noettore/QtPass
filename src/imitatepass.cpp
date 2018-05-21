@@ -57,13 +57,10 @@ void ImitatePass::Show(QString file) {
  * @brief ImitatePass::OtpGenerate generates an otp code
  */
 void ImitatePass::OtpGenerate(QString file) {
-  QSignalMapper *signalMapper = new QSignalMapper(this);
-  connect(QtPassSettings::getPass(), SIGNAL(finishedShow()), signalMapper, SLOT(map()));
-  signalMapper->setMapping(QtPassSettings::getPass(), file);
-  connect(signalMapper, SIGNAL(mapped(const &QString)), this,
-            SLOT(OtpFromPasswordFile(const &QString)));
+  connect(QtPassSettings::getPass(), &Pass::finishedShow, this,
+          &ImitatePass::OtpFromPasswordFile);
+  connect(QtPassSettings::getPass(), &Pass::finishedShow, [=](){this->OtpFromPasswordFile(file)});
   QtPassSettings::getPass()->Show(file);
-
 }
 
 void ImitatePass::OtpFromPasswordFile(const QString &text, const QString &file) {
@@ -87,14 +84,14 @@ void ImitatePass::OtpFromPasswordFile(const QString &text, const QString &file) 
       emit finishedOtpGenerate(QString(), QString(e.what()));
       return;
     }
-    if (password.contains("otpauth://totp", Qt::CaseInsensitive)) {
+    if (password.startsWith("otpauth://totp", Qt::CaseInsensitive)) {
       try {
         otp = OTP::totp(paddedSecret, time(NULL), 0, 30);
       } catch (std::invalid_argument &e) {
          emit finishedOtpGenerate(QString(), QString(e.what()));
          return;
       }
-    } else if (password.contains("otpauth://hotp", Qt::CaseInsensitive)) {
+    } else if (password.startsWith("otpauth://hotp", Qt::CaseInsensitive)) {
       int counter;
       bool conversionOk;
       int counterStart = password.indexOf("counter=", 0, Qt::CaseInsensitive) + 8;

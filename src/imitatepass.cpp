@@ -3,7 +3,7 @@
 #include "qtpasssettings.h"
 #include "libotp.h"
 #include <QDirIterator>
-#include <QSignalMapper>
+#include <QRegularExpression>
 #include <time.h>
 
 using namespace Enums;
@@ -59,7 +59,6 @@ void ImitatePass::Show(QString file) {
 void ImitatePass::OtpGenerate(QString file) {
   connect(QtPassSettings::getPass(), &Pass::finishedShow, this,
           &ImitatePass::OtpFromPasswordFile);
-  connect(QtPassSettings::getPass(), &Pass::finishedShow, [=](){this->OtpFromPasswordFile(file)});
   QtPassSettings::getPass()->Show(file);
 }
 
@@ -67,7 +66,27 @@ void ImitatePass::OtpFromPasswordFile(const QString &text, const QString &file) 
   disconnect(QtPassSettings::getPass(), &Pass::finishedShow, this, 0);
   QStringList tokens = text.split('\n');
   QString password = tokens[0];
-  if (password.startsWith("otpauth://", Qt::CaseInsensitive)) {
+  QRegularExpression regexPass("^otpauth:\/\/(totp|hotp)(\/(([^:?]+)?(:([^:?]*))?))?\?(.+)$");
+  QRegularExpressionMatch passMatch = regexPass.match(password);
+  if (passMatch.hasMatch()) {
+    QString otpType = passMatch.captured(1);
+    QString accountName = passMatch.captured(6);
+    QStringList secretAndParams = passMatch.captured(7).split('&');
+    QString secret, digits, algorithm, counter issuer;
+    //error if type, account or secrets doesn't exists!
+    QRegularExpression regexSecret("^(.+)=(.+)$");
+    for (int i = 0; i < secretAndParams.size(); i++) {
+      QRegularExpressionMatch secretMatch = regexSecret.match(secretAndParams[i]);
+      //enum for string
+      switch (secretMatch.captured(1)) {
+        case /* constant-expression */:
+          /* code */
+          break;
+      
+        default:
+          break;
+      }
+    }
     uint32_t otp = -1;
     std::string secret;
     OTP::Bytes::ByteString paddedSecret;

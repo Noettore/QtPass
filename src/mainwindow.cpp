@@ -27,6 +27,7 @@
 #include <QMessageBox>
 #include <QShortcut>
 #include <QTimer>
+#include <QDebug> 
 
 /**
  * @brief MainWindow::MainWindow handles all of the main functionality and also
@@ -979,12 +980,40 @@ void MainWindow::renameFolder() {
   bool ok;
   QString srcDir = QDir::cleanPath(Util::getDir(ui->treeView->currentIndex(), false, model, proxyModel));
   QString srcDirName = QDir(srcDir).dirName();
-  QString newName =
+  QString newName;
+  QInputDialog renameDialog;
+  renameDialog.setInputMode(QInputDialog::TextInput);
+  renameDialog.setLabelText(tr("Rename Folder To: "));
+  renameDialog.setTextValue(srcDirName);
+  renameDialog.setWindowTitle(tr("Rename file"));
+
+  connect(&renameDialog, &QInputDialog::textValueChanged, this, [&] () {
+    qDebug() << "Check";
+    newName = renameDialog.textValue();
+    QString destDir = srcDir;
+    destDir.replace(srcDir.lastIndexOf(srcDirName), srcDirName.length(), newName);
+    bool exists = QFileInfo(destDir).exists();
+    qDebug() << "Exists: " << exists;
+    if(destDir != srcDir && exists) {
+      renameDialog.setStyleSheet("*::textValue {color: red}");
+      qDebug() << "RED";
+    } else {
+      renameDialog.setStyleSheet("*::textValue {color: black}");
+      qDebug() << "BLACK";
+    }
+  });
+
+  //renameDialog.setStyleSheet("*{color: red}");
+
+  ok = renameDialog.exec();
+  newName = renameDialog.textValue();
+
+ /* QString newName =
       QInputDialog::getText(this, tr("Rename file"),
                             tr("Rename Folder To: "),
                             QLineEdit::Normal,
                             srcDirName,
-                            &ok);
+                            &ok); */
   if (!ok || newName.isEmpty())
     return;
   QString destDir = srcDir;

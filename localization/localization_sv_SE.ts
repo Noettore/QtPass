@@ -710,18 +710,18 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+20"/>
-        <location line="+33"/>
+        <location line="+24"/>
+        <location line="+57"/>
         <source>Rename file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-32"/>
+        <location line="-59"/>
         <source>Rename Folder To: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+60"/>
         <source>Rename File To: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -753,13 +753,13 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Gömt lösenord</translation>
     </message>
     <message>
-        <location line="-626"/>
+        <location line="-654"/>
         <source>Content hidden</source>
         <translation>Gömt innehåll</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+700"/>
+        <location line="+728"/>
         <source>Password</source>
         <translation type="unfinished">Lösenord</translation>
     </message>
@@ -768,7 +768,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Urklippet ej rensat</translation>
     </message>
     <message>
-        <location line="-657"/>
+        <location line="-685"/>
         <source>Password and Content hidden</source>
         <translation>Gömt lösenord och innehåll</translation>
     </message>

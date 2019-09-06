@@ -702,18 +702,18 @@ p, li { white-space: pre-wrap; }
 (Wird in %1 platziert werden)</translation>
     </message>
     <message>
-        <location line="+20"/>
-        <location line="+33"/>
+        <location line="+24"/>
+        <location line="+57"/>
         <source>Rename file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-32"/>
+        <location line="-59"/>
         <source>Rename Folder To: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+60"/>
         <source>Rename File To: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -753,18 +753,18 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Passwort ausgeblendet</translation>
     </message>
     <message>
-        <location line="-626"/>
+        <location line="-654"/>
         <source>Content hidden</source>
         <translation>Inhalt ausgeblendet</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+700"/>
+        <location line="+728"/>
         <source>Password</source>
         <translation>Passwort</translation>
     </message>
     <message>
-        <location line="-676"/>
+        <location line="-704"/>
         <source>OTP Code</source>
         <translation>OTP-Code</translation>
     </message>
